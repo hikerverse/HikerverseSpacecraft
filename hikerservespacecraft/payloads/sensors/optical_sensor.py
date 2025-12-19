@@ -1,7 +1,11 @@
+import numpy as np
+
 from hikerservespacecraft.active_component import ActiveComponent
 from hikerservespacecraft.commandable import Commandable
 from hikerservespacecraft.reference.component_attributes import get_component_data
 from hikerservespacecraft.universe_aware import UniverseAware
+from hikerverseuniverse.di.di_lib import Inject
+from hikerverseuniverse.di.di_registry import IOpticalSensor
 from hikerverseuniverse.sensor_physics.optical_sensor_implementation import OpticalSensorImpl
 from hikerverseuniverse.utils.math_utils import gaussian_psf
 
@@ -11,8 +15,29 @@ class OpticalSensor(ActiveComponent, Commandable, UniverseAware):
     """Optical imaging sensor."""
     category = "sensor/optical"
 
+    opt_sens: IOpticalSensor = Inject()
+
     def __init__(self, name: str, description: str, mass: float, volume: float):
         super().__init__(name, description, mass, volume)
+
+
+        self.up_hint = np.array([0, 1, 0])
+
+        self.psf = gaussian_psf(3, 1),
+        self.star_field = None,
+        self.band_center_m = 550e-9,
+        self.aperture_diameter = 1,
+        self.fov_deg = 45,
+        self.resolution = (512, 512),
+        self.telescope_position = np.array([0, 0, 0]),
+        self.camera_direction = np.array([0, 0, -1]),
+        self.up_hint = np.array([0, 1, 0])
+        self.threshold = 5e-18,
+        self.exposure = 1
+        self.saturation_limit = 1e-10,
+        self.blooming_factor = 0.2
+        self.log_scale = False,
+        self.gain = 1
 
 
     # def take_image(self):

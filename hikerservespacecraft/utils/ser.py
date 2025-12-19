@@ -5,6 +5,7 @@ import json
 import pkgutil
 import dataclasses
 from typing import Any, Dict, Iterable, Set
+import numpy as np
 
 from hikerservespacecraft.hull import Hull
 from hikerservespacecraft.spacecraft import Spacecraft
@@ -120,6 +121,20 @@ def _serialize(obj: Any, _seen: Set[int], _depth: int, _max_depth: int) -> Any:
         if isinstance(obj, dict):
             return {str(k): _serialize(v, _seen, _depth + 1, _max_depth) for k, v in obj.items()}
 
+        # numpy arrays and scalars
+        if isinstance(obj, np.ndarray):
+            # store as nested python lists + dtype string so JSON-serializable
+            try:
+                return {"__type__": "ndarray", "items": obj.tolist(), "dtype": str(obj.dtype)}
+            except Exception:
+                return {"__type__": "ndarray", "items": obj.tolist()}
+        if isinstance(obj, np.generic):
+            # numpy scalar -> native python scalar
+            try:
+                return obj.item()
+            except Exception:
+                return repr(obj)
+
         # full custom serialization hook
         if hasattr(obj, "__serialize__"):
             try:
@@ -199,6 +214,22 @@ def _deserialize_recursive(data: Any) -> Any:
     def handle_tuple(value):
         return tuple(_deserialize_recursive(item) for item in value["items"])
 
+    def handle_ndarray(value):
+        items = value.get("items")
+        dtype = value.get("dtype")
+        if items is None:
+            return np.array([])
+        try:
+            if dtype:
+                return np.array(items, dtype=np.dtype(dtype))
+            return np.array(items)
+        except Exception:
+            # fallback to best-effort conversion
+            try:
+                return np.array(items)
+            except Exception:
+                raise DeserializationError("Failed to reconstruct ndarray")
+
     def handle_custom_class(value):
         class_name = value.pop("__type__")
         cls = classes.get(class_name)
@@ -213,6 +244,7 @@ def _deserialize_recursive(data: Any) -> Any:
         "set": handle_set,
         "frozenset": handle_frozenset,
         "tuple": handle_tuple,
+        "ndarray": handle_ndarray,
     }
 
     if isinstance(data, (int, float, str, bool, type(None))):
