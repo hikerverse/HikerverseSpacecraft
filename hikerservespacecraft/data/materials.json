@@ -1,0 +1,62 @@
+{
+  "Aluminum": {
+    "density": 2700,
+    "tensile_strength": 310
+  },
+  "Steel": {
+    "density": 7850,
+    "tensile_strength": 400
+  },
+  "Titanium": {
+    "density": 4500,
+    "tensile_strength": 900
+  },
+  "Copper": {
+    "density": 8960,
+    "tensile_strength": 210
+  },
+  "Lead": {
+    "density": 11340,
+    "tensile_strength": 17
+  },
+  "Gold": {
+    "density": 19300,
+    "tensile_strength": 120
+  },
+  "Silver": {
+    "density": 10490,
+    "tensile_strength": 170
+  },
+  "Iron": {
+    "density": 7874,
+    "tensile_strength": 250
+  },
+  "Brass": {
+    "density": 8500,
+    "tensile_strength": 500
+  },
+  "Glass": {
+    "density": 2500,
+    "tensile_strength": 70
+  },
+  "Concrete": {
+    "density": 2400,
+    "tensile_strength": 3
+  },
+  "Wood (Oak)": {
+    "density": 700,
+    "tensile_strength": 100
+  },
+  "Plastic (Polyethylene)": {
+    "density": 950,
+    "tensile_strength": 37
+  },
+  "Water": {
+    "density": 1000,
+    "tensile_strength": 0
+  },
+  "Air": {
+    "density": 1.225,
+    "tensile_strength": 0
+  }
+}
