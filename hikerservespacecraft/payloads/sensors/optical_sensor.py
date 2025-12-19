@@ -4,21 +4,25 @@ from hikerservespacecraft.active_component import ActiveComponent
 from hikerservespacecraft.commandable import Commandable
 from hikerservespacecraft.reference.component_attributes import get_component_data
 from hikerservespacecraft.universe_aware import UniverseAware
-from hikerverseuniverse.di.di_lib import Inject
+from hikerverseuniverse.di.di_example import c
+from hikerverseuniverse.di.di_lib import Inject, inject_constructor
 from hikerverseuniverse.di.di_registry import IOpticalSensor
 from hikerverseuniverse.sensor_physics.optical_sensor_implementation import OpticalSensorImpl
 from hikerverseuniverse.utils.math_utils import gaussian_psf
 
-
+@inject_constructor(c)
 class OpticalSensor(ActiveComponent, Commandable, UniverseAware):
-    __serialize_exclude__ = {'telescope'}
+    __serialize_exclude__ = {'optical_sensor'}
+
     """Optical imaging sensor."""
     category = "sensor/optical"
 
-    opt_sens: IOpticalSensor = Inject()
 
-    def __init__(self, name: str, description: str, mass: float, volume: float):
+
+    def __init__(self, name: str, description: str, mass: float, volume: float, optical_sensor: IOpticalSensor):
         super().__init__(name, description, mass, volume)
+
+        self.optical_sensor: IOpticalSensor = optical_sensor
 
 
         self.up_hint = np.array([0, 1, 0])
@@ -40,21 +44,24 @@ class OpticalSensor(ActiveComponent, Commandable, UniverseAware):
         self.gain = 1
 
 
-    # def take_image(self):
-    #     OpticalSensorImpl.render(
-    #         psf=gaussian_psf(3, 1),
-    #         star_field=star_field,
-    #         band_center_m=550e-9,
-    #         aperture_diameter=1,
-    #         fov_deg=45,
-    #         resolution=(512, 512),
-    #         telescope_position=cam_pos,
-    #         camera_direction=cam_dir,
-    #         up_hint=up_hint, threshold=threshold,
-    #         exposure=exposure, saturation_limit=saturation_limit,
-    #         blooming_factor=blooming_factor, log_scale=False,
-    #         gain=1)
-    #     )
+    def take_image(self):
+        self.optical_sensor.take_image(
+            psf=gaussian_psf(3, 1),
+            star_field=star_field,
+            band_center_m=550e-9,
+            aperture_diameter=1,
+            fov_deg=45,
+            resolution=(512, 512),
+            telescope_position=self.telescope_position,
+            camera_direction=self.camera_direction,
+            up_hint=self.up_hint,
+            threshold=self.threshold,
+            exposure=self.exposure,
+            saturation_limit=self.saturation_limit,
+            blooming_factor=self.blooming_factor,
+            log_scale=False,
+            gain=1)
+
 
 
 
