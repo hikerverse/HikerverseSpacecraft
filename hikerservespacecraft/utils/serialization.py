@@ -22,7 +22,7 @@ class DeserializationError(Exception):
 
 
 
-def serialize(obj, _seen=None, _depth=0, _max_depth=50):
+def serializesimon(obj, _seen=None, _depth=0, _max_depth=50):
     try:
 
         print(f"Serializing object of type {type(obj).__name__} at depth {_depth}")
@@ -132,7 +132,7 @@ def _load_payload_classes():
 
 
 
-def deserialize2(data, format: str = "json"):
+def deserialize2simon(data, format: str = "json"):
 
     if format == "json":
         data = json.loads(data)

@@ -27,20 +27,20 @@ class OpticalSensor(ActiveComponent, Commandable, UniverseAware):
 
         self.up_hint = np.array([0, 1, 0])
 
-        self.psf = gaussian_psf(3, 1),
-        self.star_field = None,
-        self.band_center_m = 550e-9,
-        self.aperture_diameter = 1,
-        self.fov_deg = 45,
-        self.resolution = (512, 512),
-        self.telescope_position = np.array([0, 0, 0]),
-        self.camera_direction = np.array([0, 0, -1]),
+        self.psf = gaussian_psf(3, 1)
+        self.star_field = None
+        self.band_center_m = 550e-9
+        self.aperture_diameter = 1
+        self.fov_deg = 45
+        self.resolution = (512, 512)
+        self.telescope_position = np.array([0, 0, 0])
+        self.camera_direction = np.array([0, 0, -1])
         self.up_hint = np.array([0, 1, 0])
-        self.threshold = 5e-18,
+        self.threshold = 5e-18
         self.exposure = 1
-        self.saturation_limit = 1e-10,
+        self.saturation_limit = 1e-10
         self.blooming_factor = 0.2
-        self.log_scale = False,
+        self.log_scale = False
         self.gain = 1
 
 
